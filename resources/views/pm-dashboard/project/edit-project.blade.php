@@ -1,4 +1,4 @@
-@extends('layouts.superadmin_app')
+@extends('layouts.superadmin_app', ['use_bootstrap_js' => true])
 
 @section('content')
 
@@ -274,9 +274,15 @@
                                             View/Edit
                                         </a>
 
-                                        <button type="button" class="btn btn-danger btn-sm">
-                                            Delete
-                                        </button>
+                                        <x-resource-delete-btn :id="$task->id"
+                                                    idx="task_del_{{ $task->id }}" resource="tasks"
+                                                    resourceSingle="task" />
+
+
+                                                <button onclick="deleteResource('task_del_{{ $task->id }}')"
+                                                    type="button" class="btn btn-danger btn-sm">
+                                                    Delete
+                                                </button>
                                     </td>
                                 </tr>
 
@@ -295,6 +301,137 @@
             </x-card>
         </div>
     </div>
+
+
+
+
+
+    <div class="container-fluid w-8">
+        <div>
+            @php
+                $tabb = '';
+                if (Auth::user()->userCan('can_add_notice') || Auth::user()->isTeamLead($project->team_id)) {
+                    $tabb = "<button id='add_noticex' class='btn btn-primary text-white'>Add Notice</button>";
+                }
+            @endphp
+            <x-card title="<h4><b>Notice Board</b></h4>" :tab1="$tabb" classes="border border-info">
+
+
+                <div class="table-responsive">
+
+                    <x-fancy-table>
+                        <x-fancy-table-head>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th>Notice Name</th>
+                                <th class="text-center">Description</th>  
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </x-fancy-table-head>
+
+                        <x-fancy-table-body>
+
+                            @php
+                                $i = 1;
+                            @endphp
+                            @foreach ($notices as $notice)
+                                <tr>
+                                    <td class="text-center">{{ $i }}</td>
+                                    <td>
+                                        <div class="widget-content p-0">
+                                            <div class="widget-content-wrapper">
+                                                <div class="widget-content-left flex2">
+                                                    <div class="widget-heading"><a
+                                                            href="{{ route('notices.edit', $notice->id) }}">{{ $notice->notice_title }}</a>
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="text-center">{{ $notice->notice_content}}</td> 
+
+                                    <td class="text-center">
+                                        <a href="{{ route('notices.edit', $notice->id) }}" type="button"
+                                            class="btn btn-primary btn-sm">
+                                            View/Edit
+                                        </a>
+
+                                        <x-resource-delete-btn :id="$notice->id"
+                                                    idx="notice_del_{{ $notice->id }}" resource="notices"
+                                                    resourceSingle="notice" />
+
+
+                                                <button onclick="deleteResource('notice_del_{{ $notice->id }}')"
+                                                    type="button" class="btn btn-danger btn-sm">
+                                                    Delete
+                                                </button>
+                                    </td>
+                                </tr>
+
+                                @php
+                                    $i++;
+                                @endphp
+                            @endforeach
+                        </x-fancy-table-body>
+                    </x-fancy-table>
+
+                    <div>
+                        {{ $notices->links() }}
+                    </div>
+                </div>
+
+            </x-card>
+        </div>
+    </div>
+
+
+  <div class="modal" tabindex="-1" id="edit_form_modal" data-bs-backdrop="false"  style="top: 60px">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="role_title_modal">Add a New Notice</h5>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+                <div class="modal-body">
+                    <form autocomplete="off" class="needs-validation" novalidate="" method="post"
+                        action="{{ route('notices.store') }}" id="main_form">
+                        @csrf
+                        <input type="text"  name="project_id" value="{{$project->id}}" hidden>
+                        <x-card title="New Notice" classes="border border-info">
+                            <div class="">
+
+                                <div>
+                                    <div class="">
+                                        <div class=" mb-3">
+                                            <label for="notice_title">Notice Title</label>
+                                            <input type="text" class="form-control" name="notice_title" id="notice_title"
+                                                placeholder="Notice Title" value="{{ old('notice_title') }}" required="">
+                                            <div class="invalid-feedback">
+                                                Notice Title is required.
+                                            </div>
+                                        </div> 
+                                    </div>
+
+                                    <div>
+                                        <label for="notice_content">Notice Content</label>
+                                        <textarea class="form-control mb-3" placeholder="Notice Content" name="notice_content" id="notice_content" rows="5">{{ old('notice_content') }}</textarea>
+                                    </div>
+ 
+                                    <button class="btn btn-primary btn-lg btn-block" type="submit">Add Notice</button>
+
+
+                                </div>
+                            </div>
+                        </x-card>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 
 
@@ -377,5 +514,17 @@
             reader.readAsDataURL($this[0].files[0]);
 
         }
+    </script>
+ 
+    <script>
+        var myModal = new bootstrap.Modal(document.getElementById('edit_form_modal'), {
+            keyboard: false
+        })
+
+        $("#add_noticex").on("click", function() {
+
+            myModal.show()
+
+        }) 
     </script>
 @endsection

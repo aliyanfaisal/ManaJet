@@ -15,6 +15,10 @@ use App\Http\Controllers\Project\ProjectController;
 use App\Http\Controllers\dashboard\DashboardController;
 use App\Http\Controllers\Permission\PermissionController;
 use App\Http\Controllers\Project\ProjectCategoriesController;
+use App\Http\Controllers\NoticeBoard\NoticeBoardController;
+use App\Http\Controllers\Option\OptionController;
+use App\Http\Middleware\AuthCLientAuth;
+use App\Http\Controllers\Client\ClientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,8 +68,8 @@ Route::prefix("/dashboard")->middleware("auth")->group(function(){
 
     Route::get("/", [DashboardController::class,"superDashboard"])->name("pm-dashboard");
 
-    Route::resource('project', ProjectController::class);
-    Route::get('project/{project}', [ProjectController::class,"showBoard"])->name("project.board");
+    Route::resource('project', ProjectController::class,['except'=>"show"]);
+    Route::get('project/board/{project}', [ProjectController::class,"showBoard"])->name("project.board");
 
     Route::resource('project-categories', ProjectCategoriesController::class);
 
@@ -74,11 +78,11 @@ Route::prefix("/dashboard")->middleware("auth")->group(function(){
     Route::post("/tasks/submit",[TaskController::class,"submitTask"])->name("tasks.submit");
     Route::post("/tasks/sendForVerification",[TaskController::class,"sendForVerificationTask"])->name("tasks.sendForVerification");
 
-    Route::resource('tickets', TaskController::class);
+
     Route::post("/tickets/submit",[TicketController::class,"submitTicket"])->name("tickets.submit");
 
 
-    Route::resource('tickets', TicketController::class);
+    Route::resource("notices", NoticeBoardController::class);
 
     Route::resource("teams", TeamController::class);
     
@@ -91,30 +95,39 @@ Route::prefix("/dashboard")->middleware("auth")->group(function(){
 
     Route::resource("permissions", PermissionController::class);
 
+    Route::resource("settings",OptionController::class);
 
 });
-
-
-
 
 
 Route::prefix("/member/dashboard")->group(function(){
 
-    
     Route::get("/", [DashboardController::class,"superDashboard"])->name("member-dashboard");
     
 });
 
+Route::prefix("client")->group(function(){
 
+    Route::get("/", function(){
+        return redirect()->route("client.verify");
+    })->name("client.index");
 
+    Route::get("/verify", [ClientController::class,"verify"])->name("client.verify");
+    Route::Post("/verify", [ClientController::class,"verifySecret"])->name("client.verify");
+
+    Route::get('project/{project}', [ProjectController::class,"show"])->name("project.client")->middleware(AuthCLientAuth::class);
+    
+    Route::resource('tickets', TicketController::class)->middleware(AuthCLientAuth::class);
+});
 
 Route::get('/send-notification', [TwilioController::class,"sendWhatsAppNotification"]);
 
-
-
 Route::prefix("chat")->middleware("auth")->group(function(){
 
-    Route::get("/", [ChatController::class,"index"])->name("chat.index");
+    Route::get("/", [ChatController::class,"index"])->name("chat.index"); 
+
     Route::get("/messages/{id}", [ChatController::class,"showMessages"])->name("chat.show");
     Route::post("/messages", [ChatController::class,"sendMessages"])->name("chat.send");
+
 });
+

@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Team;
 use App\Models\TeamUsers;
 use App\Models\Permission;
+use App\Models\Notification;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
@@ -169,5 +170,9 @@ class User extends Authenticatable
         return $msgs;
     }
 
+
+    public function notifications(){
+        return $this->hasMany(Notification::class,"user_id");
+    }
 
 }

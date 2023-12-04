@@ -107,7 +107,7 @@
                                         <div class="badge badge-success">{{$task->priority}}</div>
                                     </td>
 
-                                    <td class="text-center">
+                                    <td class="text-center" style="min-width: 150px">
                                         <a href="{{route('tasks.show', ['task'=>$task->id])}}" type="button" class="btn btn-info btn-sm">
                                             View
                                         </a>

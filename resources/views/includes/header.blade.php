@@ -50,6 +50,72 @@
                     </a>
                 </li>
                 @endif
+
+
+
+                @php
+                    $notifications=[];
+
+                    if(Auth::check()){
+
+                        $notifications= Auth::user()->notifications()->limit(10)->get();
+
+                        $unseen = $notifications->filter(function($noti){
+                            return $noti->seen==0;
+                        });
+                    }  
+
+                @endphp
+
+
+                <li class="dropdown nav-item">
+ 
+                            <div class="btn-group">
+                                <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    class="nav-link"> 
+                                        <i class="nav-link-icon fa fa-bell"></i>
+                                        @if($notifications->isNotEmpty())
+                                        <span class="btn__badge pulse-button ">{{count($unseen)}}</span> 
+                                        @endif
+                                        Notifications 
+                                      
+                                    <i class="fa fa-angle-down ml-2 opacity-8"></i>
+                                </a>
+
+                                </a>
+                                <div tabindex="-1" role="menu" aria-hidden="true"
+                                    class="dropdown-menu dropdown-menu-right" style="min-width:30rem">
+
+                                    @if($notifications->isEmpty())
+                                    <div class="text-center">No Notifications</div>
+                                    @endif
+                                    @foreach($notifications as $noti)
+
+                                        <a type="button" href="{{$noti->link}}" style="@if($noti->seen==0) background: #E0F3FF; @endif color: #5f5f5f; padding-left: 30px;" class="dropdown-item nav-link" >
+                                            <span style="display: flex; align-items: center;">
+                                                <i class="nav-link-icon fa fa-bell mr-2" style="color:#262626"></i> 
+                                                
+                                                <span style=" align-items: flex-start;display: inline-flex; flex-direction: column;">
+                                                    <span class="font-weight-bold">
+                                                        {{$noti->notification_title}}
+                                                    </span> 
+                                                        <p style="margin: 0px">{{Str::limit( $noti->notification_content , 20)}}</p>
+                                                    
+                                                </span>
+                                            </span>
+                                            
+
+                                        </a>
+
+                                        <div tabindex="-1" class="dropdown-divider"></div>
+
+                                    @endforeach
+ 
+                                        
+                                </div>
+                            </div>
+                        
+                </li>
             </ul>
         </div>
         <div class="app-header-right">
@@ -57,6 +123,7 @@
                 <div class="widget-content p-0">
                     <div class="widget-content-wrapper">
                         <div class="widget-content-left">
+
                             <div class="btn-group">
                                 <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                                     class="p-0 btn">
@@ -107,3 +174,5 @@
         </div>
     </div>
 </div>
+
+ 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Project;
 use App\Models\File;
 use App\Models\Task;
 use App\Models\Team;
+use App\Models\NoticeBoard;
 use App\Models\Project;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
@@ -12,10 +13,13 @@ use App\Models\ProjectCategories;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 
 class ProjectController extends Controller
 {
-        /**
+
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -30,11 +34,10 @@ class ProjectController extends Controller
         else{
             $projects= Project::whereIn("team_id", Auth::user()->teamsIDs())->orderBy("updated_at","desc")->paginate(10);
         }
-
-        // dd(Auth::user()->teamsIDs());
         
         return view("pm-dashboard.project.all-projects",['projects'=>$projects]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -51,6 +54,7 @@ class ProjectController extends Controller
         return view("pm-dashboard.project.add-project",compact("p_cats", 'teams',"tasks"));
     }
 
+
     /**
      * Store a newly created resource in storage.
      */
@@ -59,7 +63,6 @@ class ProjectController extends Controller
         if(!Auth::user()->userCan("can_add_project")){
             abort(403);
         }
-
 
         $validated= $request->validate(
             [
@@ -117,16 +120,28 @@ class ProjectController extends Controller
 
         sendNotifcation($team->team_lead_id, $title, $content, $link);
 
-        return redirect()->route("project.edit",['project'=>$project->id])->with(["message" => "Project added successfully", "result" => "success"]);
+        $secret_key= Hash::make($project->project_name);
+
+        return redirect()->route("project.edit",['project'=>$project->id])->with(["message" => "Project added successfully. <br> Secret <b>Key</b>: $secret_key", "result" => "success"]);
     }
+
+
+
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
+
+        $project= Project::findOrFail($id);
+        $tasks= Task::where("project_id",$id)->paginate(10);
+        $tickets= Ticket::where("project_id",$id)->paginate(10);
+
+        return view("pm-dashboard.project.project-details", compact("project","tasks","tickets"));
     }
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -143,7 +158,8 @@ class ProjectController extends Controller
         $project= Project::findOrFail($id);
         
         $tasks= Task::where("project_id",$id)->paginate(10);
-        return view("pm-dashboard.project.edit-project",compact("p_cats", 'teams','project','tasks'));
+        $notices= NoticeBoard::where("project_id", $id)->paginate(10);
+        return view("pm-dashboard.project.edit-project",compact("p_cats", 'teams','project','tasks','notices'));
     }
 
     /**

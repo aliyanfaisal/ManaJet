@@ -109,8 +109,17 @@
                                         <tr>
                                             <th class="text-center">Auto Generate Using ChatGPT</th>
                                             <th class="text-center">
+
+                                                @php
+                                                $enable_chatgpt= App\Models\Option::where("option_key","enable_chatgpt")->first();
+                                                @endphp
+
+                                                @if( $enable_chatgpt!=null && $enable_chatgpt->option_value != "" )
                                                 <button class="btn btn-danger text-light btn-lg btn-block "
                                                     id="auto_generate_tasks" type="button">Auto Generate Tasks</button>
+                                                @else
+                                                    <h5 class="font-weight-bold text-danger">ChatGPT Not Enabled</h5>
+                                                @endif
                                             </th>
                                         </tr>
                                     </x-fancy-table-head>

@@ -73,6 +73,13 @@
                                                             </a>
                                                         @endforeach
 
+                                                        @if($chats==null)
+                                                        <span>
+                                                            No Chats Found
+                                                        </span>
+
+                                                        @endif
+
                                                     </div>
                                                     <!-- chat-list -->
                                                 </div>
@@ -168,19 +175,21 @@
                                     </div>
 
 
-                                    <div class="modal-body">
-                                        <div class="msg-body">
-                                            <ul>
 
-                                                @php
-                                                    $messages = [];
-                                                @endphp
-                                                @if (isset($curr_user))
+                                    <div class="modal-body " @if (!isset($curr_user)) style="display: flex; align-items: center; justify-content: center;"  @endif> 
+                                        @php
+                                            $messages = [];
+                                        @endphp
+                                        @if (isset($curr_user))
                                                     @php
                                                         $messages = Auth::user()->messagesWith($curr_user->id);
                                                     @endphp
 
-                                                    @if ($messages)
+                                        @if ($messages)
+                                        <div class="msg-body">
+                                            <ul>
+
+                                               
                                                         @foreach ($messages as $msg)
                                                             <li
                                                                 class="@if ($msg->sender_id == Auth::user()->id) {{ 'repaly' }} @else {{ 'sender' }} @endif">
@@ -193,12 +202,19 @@
                                                                 <span class="time">{{ $msg->time }}</span>
                                                             </li>
                                                         @endforeach
-                                                    @endif
-
-                                                @endif
+                                       
 
                                             </ul>
                                         </div>
+
+                                        
+                                        @endif
+
+                                         @else
+                                                        <div style="display: flex;flex: 1; justify-content: center;align-items: center;">
+                                                            <h3>Select a Chat first!</h3> 
+                                                        </div>
+                                        @endif
                                     </div>
 
 

@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class NoticeBoard extends Model
 {
     use HasFactory;
+
+    protected $fillable= [
+        "notice_title",
+        "notice_content",
+        "project_id"
+    ];
 }

@@ -131,6 +131,42 @@ class TaskController extends Controller
 
         $task = Task::create($validated);
 
+
+
+        if($request->hasFile("files")){
+
+            $files= $request->file("files");
+
+            foreach($files as $file){
+
+                $path= $file->savePublically("public/tasks/images");
+
+                $_image= File::create([
+                        "file_name"=>$file->getClientOriginalName(),
+                        "file_path"=> $path,
+                        "file_type"=>$file->getClientOriginalExtension(),
+                        "parent_id"=> $task->id,
+                        "model"=> Task::class   
+                ]);
+
+
+                $task->has_attachments=true;
+                $task->save();
+
+
+            }
+        }
+
+
+        $team= Team::findOrFail($project->team_id);
+
+        ///send notification
+        $title="A new Task ( {$ticket->team_name} ) has Been Assigned to You in Project ( {$project->project_name} )";
+        $link= route("project.client", ["project",$project->id]);
+        $content= $validated['task_description'];
+
+        sendNotifcation($team->team_lead_id, $title, $content, $link);
+
         return redirect()->route("tasks.create", ['project_id' => $request->project_id])->with(['message' => 'Task Added Successfully!', 'result' => 'success']);
 
     }
@@ -235,7 +271,13 @@ class TaskController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        
+        $task=  Task::findOrFail($id);
+
+        $task->delete();
+
+        return redirect()->back()->with(['message' => 'Task Deleted!', 'result' => 'success']);
+
     }
 
 
@@ -245,6 +287,29 @@ class TaskController extends Controller
         if (!isset($request->project)) {
             return false;
         }
+
+        $enable_chatgpt= Option::where("option_key","enable_chatgpt")->first();
+        $openai_key= Option::where("option_key","openai_api_key")->first();
+        $openai_organisation_id= Option::where("option_key","openai_organisation_id")->first();
+ 
+        if($enable_chatgpt == null || $enable_chatgpt->option_value=="disable"){
+            echo '[{ "task_name": "Please Enable ChatGPT", "task_description": "Check Settings","days_needed": 0, "priority": 0}]';
+            exit;
+        }
+        
+
+        if($openai_organisation_id != null && $openai_key!=null && $openai_organisation_id->option_value !="" && $openai_key->option_value!="" ){
+
+            $_ENV['OPENAI_API_KEY']= $openai_key->option_value;
+            $_ENV['OPENAI_ORGANIZATION']= $openai_organisation_id->option_value;
+
+        }
+
+        if(!isset($_ENV['OPENAI_API_KEY']) || !isset($_ENV['OPENAI_ORGANIZATION'])){
+            echo '[{ "task_name": "Please Set OpenAI Keys to Settings" , "task_description": "Keys Missings","days_needed": 0, "priority": 0}]';
+            exit;
+        }
+ 
 
         $request->project = (object) $request->project;
 

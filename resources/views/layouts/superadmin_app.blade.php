@@ -98,7 +98,7 @@
 
         @include('includes.header')
 
-        @include('includes.theme-options')
+        {{--@include('includes.theme-options')--}}
 
         <div class="app-main">
             @include('includes.sidebar')

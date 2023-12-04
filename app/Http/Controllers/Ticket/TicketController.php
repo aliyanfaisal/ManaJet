@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Ticket;
 
 use App\Models\Ticket;
+use App\Models\File;
+use App\Models\Team;
+use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class TicketController extends Controller
 {
@@ -22,7 +26,17 @@ class TicketController extends Controller
      */
     public function create()
     {
-        return view("pm-dashboard.project.add-project");
+        if (!isset($_GET['project_id'])) {
+            return redirect()->back()->with(['message' => "No Project ID Provided, try again!"]);
+        }
+
+        $project_id = $_GET['project_id'];
+
+        $project = Project::findOrFail($project_id);
+
+        $tasks = $project->tasks;
+
+        return view("pm-dashboard.ticket.add-ticket", compact("project","tasks"));
     }
 
     /**
@@ -31,6 +45,74 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         //
+
+         if (!isset($request->project_id)) {
+            return redirect()->back()->with(['message' => "Project ID required", "result" => "danger"]);
+        }
+
+        $project = Project::findOrFail($request->project_id);
+
+        $validated = $request->validate(
+            [
+                "ticket_name" => "required",
+                'ticket_description' => "required",
+                'ticket_deadline' => "required",
+                'priority' => "required",
+                "project_id" => "required",
+                "reference_task_id"=>"nullable"
+
+            ],
+            [
+                "ticket_name.required" => "ticket Name is required",
+                "ticket_name.unique" => strtoupper($request->ticket_name) . " is already added",
+                "ticket_description.required" => "ticket description is required",
+                "budget.numeric" => "ticket budget must be a number",
+                "priority.required" => "You must select a Priority",
+            ]
+
+        );
+
+
+        $validated['status']="pending";
+        $ticket = Ticket::create($validated);
+
+
+        if($request->hasFile("files")){
+
+            $files= $request->file("files");
+
+            foreach($files as $file){
+
+                $path= $file->storePublicly("public/ticket/images");
+
+                $_image= File::create([
+                        "file_name"=>$file->getClientOriginalName(),
+                        "file_path"=> $path,
+                        "file_type"=>$file->getClientOriginalExtension(),
+                        "parent_id"=> $ticket->id,
+                        "model"=> Ticket::class   
+                ]);
+
+                $ticket->has_attachments=true;
+                $ticket->save();
+
+            }
+        }
+
+
+
+        $team= Team::findOrFail($project->team_id);
+
+        ///send notification
+        $title="A new Ticket ( {$ticket->team_name} ) has Been Added to Project ( {$project->project_name} )";
+        $link= route("project.client", ["project",$project->id]);
+        $content= $validated['ticket_description'];
+
+        sendNotifcation($team->team_lead_id, $title, $content, $link);
+
+
+        return redirect()->route("project.client", ['project' => $request->project_id])->with(['message' => 'Ticket Added Successfully!', 'result' => 'success']);
+
     }
 
     /**
@@ -38,7 +120,8 @@ class TicketController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $ticket= Ticket::findOrFail($id);
+       return view("pm-dashboard.ticket.details-ticket", compact("ticket"));
     }
 
     /**
@@ -54,7 +137,8 @@ class TicketController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+       
+      
     }
 
     /**
@@ -64,7 +148,11 @@ class TicketController extends Controller
     {
         //
 
+        $ticket=  Ticket::findOrFail($id);
 
+        $ticket->delete();
+
+        return redirect()->back()->with(['message' => 'Ticket Deleted!', 'result' => 'success']);
         
     }
 
@@ -77,11 +165,11 @@ class TicketController extends Controller
             return redirect()->back()->with(['message' => "Ticket ID required", "result" => "danger"]);
         }
 
-        $task= Ticket::findOrFail($request->ticket_id);
+        $ticket= Ticket::findOrFail($request->ticket_id);
 
-        $task->status= $request->status;
+        $ticket->status= $request->status;
          
-        $task->save();
+        $ticket->save();
 
         return redirect()->back()->with(['message'=> 'Ticket Set to '.strtoupper($request->status), 'result' => 'success']);
     }

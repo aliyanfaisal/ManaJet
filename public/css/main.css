@@ -42,3 +42,56 @@ img.rounded-circle{
 .modal{
     background-color: rgba(0, 0, 0, 0.6);
 }
+
+
+
+@media(max-width: 768px){
+    h4 {
+        font-size: 18px;
+    }
+}
+
+
+
+.btn__badge {
+  background: #FF5D5D;
+  color: white;
+  font-size: 8px;
+  position: absolute;
+  top: 0;
+  left: 20px;
+  padding:  2px 4px;
+  border-radius: 50%;
+}
+
+.pulse-button {
+  box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.5);
+  -webkit-animation: pulse 1.5s infinite;
+}
+
+.pulse-button:hover {
+  -webkit-animation: none;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -moz-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+  70% {
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    box-shadow: 0 0 0 50px rgba(255, 0, 0, 0);
+  }
+  100% {
+    -moz-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+  }
+}

@@ -34,7 +34,9 @@ class ChatController extends Controller
 
         }
 
-        return view("chat.index", compact("team_members"));
+        $chats= [];
+
+        return view("chat.index", compact("team_members","chats"));
     }
 
 

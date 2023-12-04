@@ -22,17 +22,34 @@ class Task extends Model
         "status"
     ];
 
+
+
+
     public function project()
     {
         return $this->belongsTo( Project::class, 'project_id');
     }
 
+    public function team(){
+        return Team::find($this->project->team_id);
+    }
 
     public function taskLead(){
         return $this->belongsTo(User::class,"task_lead_id",'id');
     }
 
     public function message($user_id){
-        return Option::where("option_key","task_submit_message_".$user_id)->pluck("option_value")[0];
+        $message=  Option::where("option_key","task_submit_message_".$user_id)->pluck("option_value");
+
+        if($message->isNotEmpty()){
+            return $message[0];
+        }
+
+        return "";
+
+    }
+
+     public function attachments(){
+        return File::where("parent_id", $this->id)->where("model",$this::class)->get();
     }
 }
