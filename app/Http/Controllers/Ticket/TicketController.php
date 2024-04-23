@@ -17,8 +17,15 @@ class TicketController extends Controller
      */
     public function index()
     {
-        
-        return view("pm-dashboard.ticket.all-tickets");
+        $pending_tickets= Ticket::where("status","!=","complete")->get();
+        $completed_tickets= Ticket::where("status","complete")->get();
+
+        return view("pm-dashboard.ticket.all-tickets", compact(
+            [
+                "pending_tickets",
+                "completed_tickets"
+            ]
+        ));
     }
 
     /**
@@ -44,7 +51,6 @@ class TicketController extends Controller
      */
     public function store(Request $request)
     {
-        //
 
          if (!isset($request->project_id)) {
             return redirect()->back()->with(['message' => "Project ID required", "result" => "danger"]);

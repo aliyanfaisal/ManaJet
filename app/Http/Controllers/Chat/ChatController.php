@@ -28,13 +28,27 @@ class ChatController extends Controller
                 $intersection = array_intersect($team_ids, $memTeams);
 
                 if (empty($intersection)) {
+
                     unset($team_members[$key]);
                 }
             }
 
         }
 
+      
+
         $chats= [];
+        $chat_sender= Chat::where("sender_id",Auth::user()->id)->get();
+        $chat_receiver= Chat::where("receiver_id", Auth::user()->id)->get();
+
+        
+        if($chat_sender->isNotEmpty()){
+            $chats= $chat_sender->merge($chat_receiver);
+        }
+        else{
+            $chats=  ($chat_receiver);
+        }
+    
 
         return view("chat.index", compact("team_members","chats"));
     }

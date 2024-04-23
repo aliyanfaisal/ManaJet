@@ -85,9 +85,6 @@
                     <div class="col-md-8 mb-3 border ">
 
                         <div>
-                        	   
-				             
-	                        
                             <x-card title="<h4><b>Project Ticket</b></h4>" tab1="<a href='{{route('tickets.create', ['project_id'=>$project->id])}}' class='btn btn-primary'>Add Tickets</a>" classes="border border-info">
 
 

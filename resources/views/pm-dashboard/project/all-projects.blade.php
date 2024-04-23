@@ -32,7 +32,7 @@
 
 
                             @foreach ($projects as $project)
-                                <tr>
+                                <tr class="@if($project->project_status=='completed') border border-success @endif">
                                     <td class="text-center text-muted">#{{ $i }}</td>
                                     <td>
                                         <div class="widget-content p-0">
@@ -67,7 +67,7 @@
                                     </td>
                                     <td class="text-center">
                                         <div
-                                            class="badge badge-@if ($project->project_status == 'complete') {{ 'success' }} @else{{ 'warning' }} @endif">
+                                            class="badge badge-@if ($project->project_status == 'completed'){{'success'}} @else{{ 'warning' }} @endif">
                                             {{ $project->project_status }}</div>
                                     </td>
 
@@ -114,4 +114,10 @@
             </x-card>
         </div>
     </div>
+@endsection
+
+
+
+@section("js")
+<x-hide-sidebar-on-load></x-hide-sidebar-on-load>
 @endsection

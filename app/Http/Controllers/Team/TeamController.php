@@ -130,8 +130,8 @@ class TeamController extends Controller
             [
                 "team_name.required" => "Team Name is required",
                 "team_lead_id.required" => "Team Lead is required",
-                "team_category.required" => "Team description is required",
-                "team_description.required" => "Team description is required",
+                "category_id.required" => "Category is required",
+                "team_description.required" => "Team Description is required",
             ]
 
         );

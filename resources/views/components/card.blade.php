@@ -8,10 +8,11 @@
 
         <ul class="nav">
             @isset($tab1)
-                <li class="nav-item"> {!!$tab1!!} </li>
+
+                <li class="nav-item"> {!!htmlspecialchars_decode($tab1)!!} </li>
             @endisset
             @isset($tab2) 
-                <li class="nav-item"><a href="javascript:void(0);" class="nav-link second-tab-toggle">{!!$tab2!!}</a></li>
+                <li class="nav-item"><a href="javascript:void(0);" class="nav-link second-tab-toggle">{!!htmlspecialchars_decode($tab2)!!}</a></li>
             @endisset
         </ul>
     </div>

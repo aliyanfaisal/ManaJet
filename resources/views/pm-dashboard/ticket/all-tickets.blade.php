@@ -16,7 +16,7 @@
                                     <x-fancy-table>
                                         <x-fancy-table-head>
                                             <tr>
-                                                <th>Name</th>
+                                                <th>Ticket Title</th>
                                                 <th class="text-center">Project Name</th>
                                                 <th class="text-center">Prioriry</th>
                                                 <th class="text-center">Actions</th>
@@ -24,69 +24,64 @@
                                         </x-fancy-table-head>
             
                                         <x-fancy-table-body>
-                                            <tr>
-                                                <td>
-                                                    <div class="widget-content p-0">
-                                                        <div class="widget-content-wrapper"> 
-                                                            <div class="widget-content-left flex2">
-                                                                <div class="widget-heading">Contact Form not working</div>
-                                                                <div class="widget-subheading opacity-7">Landing page contact form                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-             
-            
-                                                <td class="text-center">
-                                                    <div class="badge badge-info">UrbanSofts Website</div>
-                                                </td>
-             
-                                                <td class="text-center">
-                                                    <div class="badge badge-warning">medium</div>
-                                                </td>
-            
-                                                <td class="text-center">
-                                                    <button type="button" class="btn btn-primary btn-sm">
-                                                        View/Edit
-                                                    </button>
-            
-                                                    <button type="button" class="btn btn-danger btn-sm">
-                                                        Delete
-                                                    </button>
-                                                </td>
-                                            </tr>
 
-                                            <tr>
-                                                <td>
-                                                    <div class="widget-content p-0">
-                                                        <div class="widget-content-wrapper"> 
-                                                            <div class="widget-content-left flex2">
-                                                                <div class="widget-heading">Error while installing</div>
-                                                                <div class="widget-subheading opacity-7">Not installing on Oneplus 7                                                                </div>
+                                            @php
+                                                $i = 1;
+                                            @endphp
+                                            @foreach ($pending_tickets as $ticket)
+                                                <tr> 
+                                                    <td>
+                                                        <div class="widget-content p-0">
+                                                            <div class="widget-content-wrapper">
+                                                                <div class="widget-content-left flex2">
+                                                                    <div class="widget-heading"><a
+                                                                            href="{{ route('tickets.edit', $ticket->id) }}">{{ $ticket->ticket_name }}</a>
+                                                                    </div>
+                                                                    <div class="widget-subheading opacity-7">
+                                                                        <b>{{ Str::limit($ticket->ticket_description, 20) }}</b>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </td>
-             
-            
-                                                <td class="text-center">
-                                                    <div class="badge badge-info">Test Mobile App</div>
-                                                </td>
-             
-                                                <td class="text-center">
-                                                    <div class="badge badge-danger">high</div>
-                                                </td>
-            
-                                                <td class="text-center">
-                                                    <button type="button" class="btn btn-primary btn-sm">
-                                                        View/Edit
-                                                    </button>
-            
-                                                    <button type="button" class="btn btn-danger btn-sm">
-                                                        Delete
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                                    </td>
+
+                                                    {{-- <td class="text-center">{{ $ticket}}</td> --}}
+
+                                                    <td class="text-center">{{ $ticket->project ? $ticket->project->project_name : "" }}</td>
+
+                                                    <td class="text-center">
+                                                        <div class="badge badge-info">{{ $ticket->priority }}</div>
+                                                    </td>
+
+                                                    <td class="text-center">
+                                                        <div
+                                                            class="badge badge-@if ($ticket->status == 'complete'){{ 'success' }} @else{{ 'warning' }} @endif">
+                                                            {{ $ticket->status }}</div>
+                                                    </td>
+
+                                                    <td class="text-center">
+                                                        
+                                                        <a href="{{route('tickets.show',['ticket'=>$ticket->id])}}" type="submit" class="btn btn-info btn-sm">
+                                                                View
+                                                            </a>
+
+                                                        <x-resource-delete-btn :id="$ticket->id"
+		                                                    idx="project_ticket_del_{{ $ticket->id }}" resource="tickets"
+		                                                    resourceSingle="ticket" />
+
+
+		                                                <button onclick="deleteResource('project_ticket_del_{{ $ticket->id }}')"
+		                                                    type="button" class="btn btn-danger btn-sm">
+		                                                    Delete 
+		                                                </button>
+
+                                                    </td>
+                                                </tr>
+
+                                                @php
+                                                    $i++;
+                                                @endphp
+                                            @endforeach
                                         </x-fancy-table-body>
                                     </x-fancy-table>
                                 </div>
@@ -109,37 +104,64 @@
                                     </x-fancy-table-head>
         
                                     <x-fancy-table-body>
-                                        <tr>
-                                            <td>
-                                                <div class="widget-content p-0">
-                                                    <div class="widget-content-wrapper"> 
-                                                        <div class="widget-content-left flex2">
-                                                            <div class="widget-heading">Renane title in UI ux</div>
-                                                            <div class="widget-subheading opacity-7">From saira to saira shah                                                                </div>
+
+                                        @php
+                                            $i = 1;
+                                        @endphp
+                                        @foreach ($completed_tickets as $ticket)
+                                            <tr> 
+                                                <td>
+                                                    <div class="widget-content p-0">
+                                                        <div class="widget-content-wrapper">
+                                                            <div class="widget-content-left flex2">
+                                                                <div class="widget-heading"><a
+                                                                        href="{{ route('tickets.edit', $ticket->id) }}">{{ $ticket->ticket_name }}</a>
+                                                                </div>
+                                                                <div class="widget-subheading opacity-7">
+                                                                    <b>{{ Str::limit($ticket->ticket_description, 20) }}</b>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </td>
-         
-        
-                                            <td class="text-center">
-                                                <div class="badge badge-info">UrbanSofts Website</div>
-                                            </td>
-         
-                                            <td class="text-center">
-                                                <div class="badge badge-success">high</div>
-                                            </td>
-        
-                                            <td class="text-center">
-                                                <button type="button" class="btn btn-primary btn-sm">
-                                                    View/Edit
-                                                </button>
-        
-                                                <button type="button" class="btn btn-danger btn-sm">
-                                                    Delete
-                                                </button>
-                                            </td>
-                                        </tr>
+                                                </td>
+
+                                                {{-- <td class="text-center">{{ $ticket}}</td> --}}
+
+                                                <td class="text-center">{{ $ticket->project ? $ticket->project->project_name : "" }}</td>
+
+                                                <td class="text-center">
+                                                    <div class="badge badge-info">{{ $ticket->priority }}</div>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <div
+                                                        class="badge badge-@if ($ticket->status == 'complete'){{ 'success' }} @else{{ 'warning' }} @endif">
+                                                        {{ $ticket->status }}</div>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    
+                                                    <a href="{{route('tickets.show',['ticket'=>$ticket->id])}}" type="submit" class="btn btn-info btn-sm">
+                                                            View
+                                                        </a>
+
+                                                    <x-resource-delete-btn :id="$ticket->id"
+                                                        idx="project_ticket_del_{{ $ticket->id }}" resource="tickets"
+                                                        resourceSingle="ticket" />
+
+
+                                                    <button onclick="deleteResource('project_ticket_del_{{ $ticket->id }}')"
+                                                        type="button" class="btn btn-danger btn-sm">
+                                                        Delete 
+                                                    </button>
+
+                                                </td>
+                                            </tr>
+
+                                            @php
+                                                $i++;
+                                            @endphp
+                                        @endforeach
                                     </x-fancy-table-body>
                                 </x-fancy-table>
                             </div>

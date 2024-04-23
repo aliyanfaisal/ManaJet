@@ -11,8 +11,8 @@
 
                     <x-display-form-errors />
 
-                    <div class="needs-validation row" novalidate="">
-                        <form autocomplete="false" class="col-md-6 order-md-2">
+                    <div class="row" >
+                        <form novalidate autocomplete="false" class="col-md-6 order-md-2 needs-validation">
                             <x-card title="Add Team Members" classes="w-100 border-info">
                                 @if (Request::is('*/teams/create'))
                                     <div class="overlay-disable" style="">
@@ -47,7 +47,7 @@
                             </x-card>
 
                         </form>
-                        <form novalidate class="col-md-6 order-md-1" method="post" action="{{route('teams.store')}}">
+                        <form novalidate class="col-md-6 order-md-1 needs-validation" method="post" action="{{route('teams.store')}}">
                             @csrf
                             <h4 class="mb-3">Team Details</h4>
                             <div>

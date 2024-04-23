@@ -70,6 +70,7 @@ Route::prefix("/dashboard")->middleware("auth")->group(function(){
 
     Route::resource('project', ProjectController::class,['except'=>"show"]);
     Route::get('project/board/{project}', [ProjectController::class,"showBoard"])->name("project.board");
+    Route::PATCH('project/{project}/update-properties', [ProjectController::class,"updateProperties"])->name("project.update.properties");
 
     Route::resource('project-categories', ProjectCategoriesController::class);
 

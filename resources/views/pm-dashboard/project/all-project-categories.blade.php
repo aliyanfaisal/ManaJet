@@ -237,6 +237,7 @@
 
 
 
+
     <script>
         // Example starter JavaScript for disabling form submissions if there are invalid fields
         (function() {
@@ -257,6 +258,12 @@
             }, false);
         })();
     </script>
+@endsection
+
+
+
+@section("js")
+<x-hide-sidebar-on-load></x-hide-sidebar-on-load>
 @endsection
 
 

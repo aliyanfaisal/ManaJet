@@ -1,6 +1,7 @@
 @extends('layouts.guest_app')
 
 @section('content')
+
     <div class="container-fluid w-8" id="form_top">
         <div>
             <x-card

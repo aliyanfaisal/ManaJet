@@ -284,9 +284,17 @@
                                             View/Edit
                                         </a>
 
-                                        <button type="button" class="btn btn-danger btn-sm">
+                                        <x-resource-delete-btn :id="$task->id"
+                                            idx="task_del_{{ $task->id }}" resource="tasks"
+                                            resourceSingle="task" />
+
+
+                                        <button onclick="deleteResource('task_del_{{ $task->id }}')"
+                                            type="button" class="btn btn-danger btn-sm">
                                             Delete
                                         </button>
+
+                                        
                                     </td>
                                 </tr>
 

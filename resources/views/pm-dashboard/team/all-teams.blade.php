@@ -23,7 +23,7 @@
 
                     @foreach ($teams as $team )
                     <div class="col-md-4">
-                        <x-card title='<a href="{{route("teams.edit",["team"=>$team->id])}}" class=" fsize-2 " style="text-decoration:underline;font-weight:500">{{$team->team_name}}</a>' 
+                        <x-card title='<a href="{{route("teams.edit",["team"=>$team->id])}}" class=" fsize-2 " style="text-decoration:underline;font-weight:700">{{$team->team_name}}</a>' 
                             tab1='<b class="badge badge-danger" id="preview_cat">{{$team->category->cat_name}}</b>'
                             classes="border border-info">
 

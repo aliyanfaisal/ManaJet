@@ -93,7 +93,9 @@
                                                         <h6>{{ Auth::user()->role_id == 1 ? 'All Members' : 'All Teams Members' }}
                                                         </h6>
                                                         <div class="divider"></div>
+                                                
                                                         @foreach ($team_members as $mem)
+
                                                             <a href="{{ route('chat.show', ['id' => $mem->id]) }}"
                                                                 data-userid="{{ $mem->id }}"
                                                                 class="d-flex align-items-center mem-avatar">

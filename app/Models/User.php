@@ -123,7 +123,16 @@ class User extends Authenticatable
 
     public function teamsIDs()
     {
-        return TeamUsers::where("user_id", $this->id)->pluck("team_id");
+        $team_ids=  TeamUsers::where("user_id", $this->id)->pluck("team_id");
+        $teams_where_lead= Team::where("team_lead_id", $this->id)->pluck("id");
+
+        if(isset($teams_where_lead)){
+            foreach($teams_where_lead as $id_){
+                $team_ids->push($id_);
+            }
+        }
+        
+        return $team_ids;
     }
 
     public function belongsToTeam($team_id)

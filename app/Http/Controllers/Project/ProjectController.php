@@ -5,15 +5,16 @@ namespace App\Http\Controllers\Project;
 use App\Models\File;
 use App\Models\Task;
 use App\Models\Team;
-use App\Models\NoticeBoard;
-use App\Models\Project;
 use App\Models\Ticket;
+use App\Models\Project;
+use App\Models\NoticeBoard;
 use Illuminate\Http\Request;
 use App\Models\ProjectCategories;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProjectController extends Controller
 {
@@ -172,6 +173,7 @@ class ProjectController extends Controller
             abort(403);
         }
 
+
         $validated= $request->validate(
             [
                 "project_name" => "required|unique:projects,project_name,$id",
@@ -197,8 +199,6 @@ class ProjectController extends Controller
 
         );
  
-       
-        
         $update = $project->update($validated);
 
         if($project->wasChanged("team_id")){
@@ -277,6 +277,36 @@ class ProjectController extends Controller
     }
 
 
+    public function updateProperties(Request $request, Project $project)
+    {
+        $validator =  Validator::make($request->all(),
+            [
+                "properties"=> "required",
+            ],
+            [
+                "properties.required" =>"No Properties Passed to Update",
+            ]
+        )->validate();
+
+        $props= $validator['properties'];
+        
+        foreach($props as $prop_name => $prop){
+           if( $project->getAttribute($prop_name)){
+                $project->$prop_name = $prop;
+           }
+        }
+
+        $project->save();
+
+        if($project->wasChanged()){
+            return redirect()->back()->with(['message'=> 'Changes Were Made Successfully!','result'=> 'success']);
+        }
+        else{
+            return redirect()->back()->with(['message'=> 'No Changes Made!','result'=> 'danger']);
+        }
+
+
+    }
     public function showBoard($id){
 
         $project= Project::findOrFail($id);

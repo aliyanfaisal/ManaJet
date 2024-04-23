@@ -24,22 +24,49 @@
             @php
                 $tabb = '';
                 if (Auth::user()->userCan('can_add_project')  ) {
-                    $tabb = ' <span>
-                                                <button onclick="deleteResource(\'project_del_'.$project->id.'\')"
-                                                    type="button" class="btn btn-danger btn-sm">
+                    $tabb = " <span>
+                                                <button onclick='deleteResource(\"project_del_".$project->id."\")'
+                                                    type='button' class='btn btn-danger btn-sm'>
                                                     Delete Project
                                                 </button>
-                                            </span>';
+                                            </span>";
+                }
+
+
+                $tabb2 = '';
+                if (Auth::user()->userCan('can_add_project')  ) {
+                    $tabb2 = " <span>
+                        <form action='".route("project.update.properties", ['project'=> $project->id])."' method='post'>
+                          ".csrf_field()." 
+                            ".method_field("PATCH")."
+
+                            <input hidden name=\"properties[project_status]\" value='".( ($project->project_status=="completed") ? "in-progress":"completed" )."'>
+                            <button
+                                type='submit' class='btn btn-".( ($project->project_status=="completed") ? "warning":"info" )." btn-sm'>
+                                Mark Project As ".( ($project->project_status=="completed") ? "In-Progress":"Completed" )."
+                            </button>
+                        </form>
+                        </span>";
                 }
 
             @endphp
-            <x-card title="<h4><b>{{ $project->project_name }}</b></h4>" :tab1="$tabb" classes="border border-info">
+            <x-card title="<h4><b>{{ $project->project_name }}</b></h4>" :tab1=$tabb :tab2=$tabb2 classes="border border-info">
 
                 <div class=" px-md-5">
 
                     <x-display-errors />
 
                     <x-display-form-errors />
+
+                    @if($project->project_status=="completed")
+                    <div class="alert alert-success ">
+                        Project Status: <strong> Completed</strong>
+                    </div>
+                    @else
+                    <div class="alert alert-warning ">
+                        Project Status: <strong> In Progress</strong>
+                    </div>
+                    @endif
                     <form enctype="multipart/form-data" autocomplete="off" class="needs-validation row" novalidate=""
                         method="post" action="{{ route('project.update', ['project' => $project->id]) }}">
                         @csrf
@@ -49,7 +76,7 @@
 
                             <x-card title="Project Preview" classes="border border-info">
                                 <div class="text-center">
-                                    <img style="max-width: 400px" id="project_image_preview" class="m-auto"
+                                    <img style="max-width: 300px; width:100%" id="project_image_preview" class="m-auto"
                                         src="{{ $project->projectImageUrl() }}" alt="">
                                     <b class="badge badge-info position-absolute"
                                         style="left: 7px; top: 70px;  font-size: 20px;"> <span

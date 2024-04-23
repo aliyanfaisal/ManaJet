@@ -15,12 +15,12 @@
                         <div class="col-md-4 order-md-2 mb-4">
                             <x-card title="Project Preview" classes="border border-info">
                                 <div class="text-center">
-                                    <img style="max-width: 350px" class="m-auto" id="project_image_preview" src="{{ asset('assets/images/logo.png') }}" alt="">
+                                    <img style="    max-width: 300px;width: 100%;" class="m-auto" id="project_image_preview" src="{{ asset('assets/images/logo.png') }}" alt="">
                                     <b class="badge badge-info position-absolute"
                                         style="left: 7px; top: 70px;  font-size: 20px;" ><span id="budget_preview">---</span> {{env("CURRENCY_SYMBOL",'PKR')}}</b>
                                     <h5 class="font-weight-bold my-3" style="text-transform: capitalize" id="project_name_preview">--------</h5>
                                     <hr>
-                                    <div class="d-flex justify-content-between">
+                                    <div class="d-flex justify-content-between flex-wrap">
                                         <span><b class="badge badge-info fsize-1" id="project_category_preview">------</b></span>
                                         <span><b class="badge badge-warning fsize-1"  id="team_id_preview">---</b></span>
                                     </div>

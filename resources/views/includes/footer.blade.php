@@ -1,7 +1,7 @@
 <div class="app-wrapper-footer">
     <div class="app-footer">
         <div class="app-footer__inner justify-content-center text-center font-weight-bold">
-            Built with &hearts; by Aliyan and Saira 
+            Built with &hearts; by Aliyan Faisal and Saira 
         </div>
     </div>
 </div>
@@ -26,5 +26,16 @@ $token = Session::get("user_token");
 @isset($use_bootstrap_js)
 <script src="{{asset('js/bootstrap/bootstrap-js.js')}}"></script>
 @endisset
+
+@isset($use_chartjs)
+
+<script src="{{asset("js/chartjs/chartjs-utils.js")}}"></script>
+<script>
+    const Utils = ChartUtils.init();
+</script>
+<script src="{{asset("js/chartjs/chartjs.js")}}"></script>
+<script src="{{asset('js/chartjs/chartjs-piecelabel.js') }}"></script>
+@endisset
+
 @yield('js')
 

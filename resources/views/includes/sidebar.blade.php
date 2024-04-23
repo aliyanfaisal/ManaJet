@@ -70,7 +70,7 @@
                 <li>
                     <a href="{{route("project-categories.index")}}"  class="@if( request()->route()->named('project-categories.index') ) mm-active @endif">
                         <i class="metismenu-icon pe-7s-note2"></i>
-                        Project Categories
+                        Service Categories
                     </a>
                 </li>
                 @endif
@@ -88,11 +88,11 @@
                         Submitted Tasks
                     </a>
                     @endif 
-                    <a href="{{route("tasks.index", ['status'=>'pending'])}}"  class="@if( request()->route()->named('tasks.index') ) mm-active @endif">
+                    <a href="{{route("tasks.index", ['status'=>'pending'])}}"  class="@if( request()->route()->named('tasks.index')  && isset($_GET['status']) && $_GET['status']=="pending" ) mm-active @endif">
                         <i class="metismenu-icon pe-7s-note"></i>
                         On Going Tasks
                     </a>
-                    <a href="{{route("tasks.index", ['status'=>'complete'])}}"  class="@if( request()->route()->named('tasks.index') ) mm-active @endif">
+                    <a href="{{route("tasks.index", ['status'=>'complete'])}}"  class="@if( request()->route()->named('tasks.index') && isset($_GET['status']) && $_GET['status']=="complete") mm-active @endif">
                         <i class="metismenu-icon pe-7s-note"></i>
                         Completed Tasks
                     </a>

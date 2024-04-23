@@ -64,6 +64,7 @@ class                                                                           
             "status_color"=>$color
         ];
     }
+
     public function category(){
         return $this->belongsTo(ProjectCategories::class,"project_category","id");
     }
@@ -78,7 +79,7 @@ class                                                                           
 
     public function projectImageUrl(){
 
-        $path= ($this->projectImage)? $this->projectImage->file_path : "default-image.png";
+         $path= ($this->projectImage)? $this->projectImage->file_path : "default-image.png";
 
         return Storage::url($path);
     }
@@ -103,6 +104,25 @@ class                                                                           
         else{
             return false;
         }
+    }
+
+    public function pendingTasks($returnType="all"){
+        if($returnType=="count"){
+            return Task::where("project_status","pending")->count();
+        }
+        
+        return Task::where("project_status","pending")->get();
+        
+    }
+
+
+    public function pendingTickets($returnType="all"){
+        if($returnType=="count"){
+            return Ticket::where("project_status","pending")->count();
+        }
+        
+        return Ticket::where("project_status","pending")->get();
+        
     }
 
     public function tasks(){
