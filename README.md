@@ -100,3 +100,4 @@ This system was developed as a **Final Year Project** at Karakoram International
 **Aliyan Faisal**
 BS Information Technology — Karakoram International University
 [GitHub](https://github.com/aliyanfaisal) · [Email](mailto:aliyanfaisal15@gmail.com)
+# ManaJet
